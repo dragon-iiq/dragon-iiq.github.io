@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>برج الصناديق الأسطورية</title>
+<style>
+  :root{
+    --bg-deep:#0b0a1a;
+    --bg-mid:#171232;
+    --gold:#d4af37;
+    --violet:#8b5cf6;
+    --violet-glow:#b794f6;
+    --panel: rgba(22, 19, 39, 0.85);
+    --text:#f1eefc;
+    --text-dim:#a79bd1;
+    --border-gold: rgba(212, 175, 55, 0.3);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;}
+  html,body{
+    margin:0;height:100%;
+    background:radial-gradient(circle at 50% 20%, var(--bg-mid), var(--bg-deep) 70%);
+    font-family:"Tajawal","Segoe UI",Tahoma,Arial,sans-serif;
+    color:var(--text);
+    overflow:hidden;
+  }
+  #game-wrap{
+    position:relative;
+    width:100%;
+    height:100vh;
+    max-width:520px;
+    margin:0 auto;
+    overflow:hidden;
+    border-inline:1px solid rgba(212,175,55,0.15);
+  }
+  canvas{
+    display:block;
+    width:100%;
+    height:100%;
+    touch-action:none;
+  }
+
+  /* واجهة المستخدم الفاخرة المطابقة للصورة المرجعية */
+  #hud{
+    position:absolute;top:20px;left:20px;right:20px;
+    display:flex;justify-content:space-between;align-items:flex-start;
+    pointer-events:none;
+    z-index:5;
+  }
+  
+  .stats-left-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .stat-card {
+    background: var(--panel);
+    border: 1.5px solid var(--border-gold);
+    border-radius: 8px;
+    width: 85px;
+    padding: 6px 8px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    position: relative;
+  }
+  .stat-card .label {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-weight: bold;
+    margin-bottom: 2px;
+  }
+  .stat-card .value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--violet-glow);
+  }
+  .stat-card.best .value {
+    color: #e2e8f0;
+  }
+  .stat-card .crown {
+    position: absolute;
+    left: 8px;
+    bottom: 10px;
+    font-size: 11px;
+    color: var(--gold);
+  }
+
+  /* جوهرة العداد الأيمن */
+  .gem-counter {
+    background: rgba(15, 12, 28, 0.9);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 4px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+  .gem-counter .diamond-icon {
+    width: 14px;
+    height: 14px;
+    background: linear-gradient(135deg,#67e8f9,#0284c7);
+    transform: rotate(45deg);
+    border-radius: 2px;
+    box-shadow: 0 0 10px #0284c7;
+  }
+  .gem-counter .value {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    min-width: 30px;
+  }
+  .gem-counter .plus-btn {
+    color: var(--gold);
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 2px;
+  }
+
+  #popup{
+    position:absolute;left:50%;top:38%;transform:translate(-50%,-50%) scale(0.7);
+    font-size:26px;font-weight:900;color:var(--gold);
+    text-shadow:0 0 14px rgba(212,175,55,0.8);
+    opacity:0;
+    pointer-events:none;
+    z-index:6;
+    transition:opacity .18s ease, transform .18s ease;
+  }
+  #popup.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
+
+  /* شاشات البداية والنهاية */
+  .overlay{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:rgba(9,8,20,0.85);
+    backdrop-filter:blur(6px);
+    z-index:10;
+    text-align:center;
+    padding:24px;
+  }
+  .overlay.hidden{display:none;}
+  .overlay h1{
+    font-size:28px;margin:0 0 6px;color:var(--text);
+  }
+  .overlay h1 span{color:var(--violet-glow);}
+  .overlay p{color:var(--text-dim);font-size:14px;max-width:280px;line-height:1.7;margin:0 0 22px;}
+  .overlay .final-height{
+    font-size:52px;font-weight:900;color:var(--violet-glow);
+    text-shadow:0 0 20px rgba(139,92,246,0.6);
+    margin-bottom:2px;
+  }
+  .overlay .final-label{color:var(--text-dim);font-size:13px;margin-bottom:18px;}
+  
+  .btn{
+    background:linear-gradient(180deg,#7c3aed,#5b21b6);
+    border:1px solid rgba(212,175,55,0.5);
+    color:#fff;
+    font-family:inherit;
+    font-size:17px;font-weight:800;
+    padding:13px 44px;
+    border-radius:30px;
+    cursor:pointer;
+    box-shadow:0 6px 18px rgba(124,58,237,0.45);
+    transition:transform .12s ease;
+  }
+  .btn:active{transform:scale(0.95);}
+
+  .cube-icon{
+    width:70px;height:70px;margin-bottom:14px;
+    background:linear-gradient(135deg,#8b5cf6,#4c1d95);
+    border:2px solid var(--gold);
+    border-radius:10px;
+    position:relative;
+    box-shadow:0 0 30px rgba(139,92,246,0.6);
+  }
+  .cube-icon::after{
+    content:"✦";
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;color:var(--gold);
+  }
+  #tap-hint{
+    position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+    color:var(--text-dim);font-size:13px;
+    display:flex;align-items:center;gap:6px;
+    z-index:5;
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{opacity:.5;}50%{opacity:1;}}
+</style>
+</head>
+<body>
+<div id="game-wrap">
+  <canvas id="game"></canvas>
+
+  <div id="hud">
+    <div class="stats-left-group">
+      <div class="stat-card">
+        <div class="label">الارتفاع</div>
+        <div class="value" id="height-val">0</div>
+      </div>
+      <div class="stat-card best">
+        <div class="label">الأعلى</div>
+        <div class="value" id="best-val">0</div>
+        <div class="crown">👑</div>
+      </div>
+    </div>
+
+    <div class="gem-counter">
+      <div class="diamond-icon"></div>
+      <div class="value" id="gems-val">250</div>
+      <div class="plus-btn">+</div>
+    </div>
+  </div>
+
+  <div id="popup"></div>
+  <div id="tap-hint">اضغط في الشاشة لإسقاط الصندوق</div>
+
+  <div class="overlay" id="start-overlay">
+    <div class="cube-icon"></div>
+    <h1>برج الصناديق <span>السحرية</span></h1>
+    <p>اضغط في الوقت المناسب لتضع الصندوق فوق البرج بدقة. كل صندوق مثالي يمنحك جواهر إضافية ويزيد ارتفاعك.</p>
+    <button class="btn" id="start-btn">ابدأ اللعب</button>
+  </div>
+
+  <div class="overlay hidden" id="end-overlay">
+    <div class="final-height" id="final-height">0</div>
+    <div class="final-label">الارتفاع النهائي</div>
+    <button class="btn" id="retry-btn">إعادة المحاولة</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('game-wrap');
+
+  const heightVal = document.getElementById('height-val');
+  const bestVal = document.getElementById('best-val');
+  const gemsVal = document.getElementById('gems-val');
+  const popup = document.getElementById('popup');
+  const startOverlay = document.getElementById('start-overlay');
+  const endOverlay = document.getElementById('end-overlay');
+  const finalHeightEl = document.getElementById('final-height');
+  const tapHint = document.getElementById('tap-hint');
+
+  let W, H, DPR;
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = wrap.clientWidth;
+    H = wrap.clientHeight;
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const COLORS = [
+    {main:'#8b5cf6', dark:'#4c1d95', glow:'rgba(139,92,246,0.6)'},
+    {main:'#3b82f6', dark:'#1e3a8a', glow:'rgba(59,130,246,0.6)'},
+    {main:'#10b981', dark:'#065f46', glow:'rgba(16,185,129,0.6)'},
+    {main:'#ef4444', dark:'#7f1d1d', glow:'rgba(239,68,68,0.6)'},
+    {main:'#d4af37', dark:'#78350f', glow:'rgba(212,175,55,0.6)'},
+    {main:'#ec4899', dark:'#831843', glow:'rgba(236,72,153,0.6)'},
+  ];
+
+  const boxImg = new Image();
+  boxImg.src = 'box.png';
+  const BOX_IMAGES = COLORS.map(() => boxImg);
+
+  const groundImg = new Image();
+  groundImg.src = 'ground.png';
+
+  /* --- الأبعاد البصرية المحسنة والمركزة تماماً --- */
+  const BLOCK_H = 135;             
+  const BASE_W = 195;              
+  const GROUND_SCALE_W = 2.45;     
+  const SPEED_BASE = 2.4;
+  const BOX_ANGLE_CORRECTION = 0.088; 
+
+  /* إزاحة تعديل تمركز الصندوق على المحور السيني */
+  const X_OFFSET = -11; 
+
+  let stack, moving, camY, gems, best, running, gameOver, particles, comboCount, clock;
+
+  function initGame(){
+    clock = 0;
+    // تم وضع الصندوق الأول مع الإزاحة X_OFFSET ليكون في المنتصف المطلق
+    stack = [{ x: W/2 - BASE_W/2 + X_OFFSET, w: BASE_W, y: 0, colorIdx: 0, landAt: -999 }];
+    camY = undefined; 
+    gems = 250;
+    comboCount = 0;
+    particles = [];
+    running = false;
+    gameOver = false;
+    spawnMoving();
+    updateHud();
+  }
+
+  function spawnMoving(){
+    const top = stack[stack.length-1];
+    const idx = stack.length % COLORS.length;
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    const speed = SPEED_BASE + Math.min(stack.length * 0.05, 3.5);
+    moving = {
+      x: dir === 1 ? -BASE_W : W,
+      w: BASE_W, 
+      y: top.y - BLOCK_H * 1.6, 
+      dir, speed,
+      colorIdx: idx
+    };
+  }
+
+  function updateHud(){
+    heightVal.textContent = Math.max(0, stack.length - 1);
+    gemsVal.textContent = gems;
+    bestVal.textContent = best || 0;
+  }
+
+  function showPopup(text, color){
+    popup.textContent = text;
+    popup.style.color = color || 'var(--gold)';
+    popup.classList.add('show');
+    clearTimeout(showPopup._t);
+    showPopup._t = setTimeout(()=>popup.classList.remove('show'), 550);
+  }
+
+  function spawnParticles(x, y, color){
+    for(let i=0;i<18;i++){
+      const ang = Math.random()*Math.PI*2;
+      const speed = 1 + Math.random()*3;
+      particles.push({
+        x, y,
+        vx: Math.cos(ang)*speed,
+        vy: Math.sin(ang)*speed - 1,
+        life: 1,
+        color
+      });
+    }
+  }
+
+  function drop(){
+    if(!running || gameOver) return;
+    const top = stack[stack.length-1];
+    const m = moving;
+
+    const left = Math.max(top.x, m.x);
+    const right = Math.min(top.x + BASE_W, m.x + BASE_W);
+    const overlap = right - left;
+
+    if(overlap < BASE_W * 0.4){
+      endGame();
+      return;
+    }
+
+    const offset = Math.abs(m.x - top.x);
+    const perfect = offset < 15; 
+
+    const newX = perfect ? top.x : m.x;
+    const targetY = top.y - BLOCK_H; 
+
+    const newBlock = { x: newX, w: BASE_W, y: targetY, colorIdx: m.colorIdx, landAt: clock };
+    stack.push(newBlock);
+
+    const color = COLORS[m.colorIdx % COLORS.length];
+    spawnParticles(newX + BASE_W/2, targetY + BLOCK_H, color.main);
+
+    if(perfect){
+      comboCount++;
+      const bonus = 5 + comboCount*2;
+      gems += bonus;
+      showPopup('دقة مثالية +' + bonus, '#d4af37');
+    } else {
+      comboCount = 0;
+      gems += 3;
+      showPopup('+3', '#b794f6');
+    }
+
+    const h = stack.length - 1;
+    if(h > best){ best = h; }
+    updateHud();
+
+    spawnMoving();
+  }
+
+  function endGame(){
+    gameOver = true;
+    running = false;
+    const finalH = stack.length - 1;
+    if(finalH > best) best = finalH;
+    finalHeightEl.textContent = finalH;
+    updateHud();
+    setTimeout(()=>{ endOverlay.classList.remove('hidden'); }, 400);
+  }
+
+  function update(dt){
+    clock += dt;
+    if(running && !gameOver && moving){
+      moving.x += moving.dir * moving.speed;
+      if(moving.dir === 1 && moving.x > W) moving.dir = -1;
+      if(moving.dir === -1 && moving.x + BASE_W < 0) moving.dir = 1;
+    }
+    for(let i=particles.length-1;i>=0;i--){
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.life -= 0.02;
+      if(p.life <= 0) particles.splice(i,1);
+    }
+  }
+
+  function drawContactShadow(cx, groundY, w){
+    ctx.save();
+    const grad = ctx.createRadialGradient(cx, groundY, 0, cx, groundY, w*0.65);
+    grad.addColorStop(0, 'rgba(0,0,0,0.4)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.ellipse(cx, groundY, w*0.65, w*0.16, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function drawGround(){
+    if(!groundImg.complete || groundImg.naturalWidth === 0) return;
+    const aspect = groundImg.naturalHeight / groundImg.naturalWidth;
+    
+    const groundW = BASE_W * GROUND_SCALE_W; 
+    const groundH = (groundW * aspect) * 0.58; 
+
+    // ضبط الموضع السيني ليكون بالمنتصف تماماً مقارنة بعرض الشاشة
+    const gx = W/2 - groundW/2;
+    const gy = BLOCK_H - groundH * 0.72; 
+
+    ctx.drawImage(groundImg, gx, gy, groundW, groundH);
+  }
+
+  function drawLaserAndIndicator(m, topBlock){
+    if(!m || !topBlock) return;
+
+    const topOfStackY = topBlock.y; 
+    const bottomOfMovingY = m.y + BLOCK_H; 
+
+    ctx.save();
+    // إزاحة المربع النيوني ليكون فوق الصندوق الأخير تماماً
+    ctx.translate(topBlock.x + BASE_W/2, topOfStackY);
+    ctx.shadowColor = 'rgba(183, 148, 246, 0.9)';
+    ctx.shadowBlur = 15;
+    ctx.strokeStyle = 'rgba(183, 148, 246, 0.85)';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([8, 4]);
+
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(BASE_W/2 + 5, 12);
+    ctx.lineTo(0, 32);
+    ctx.lineTo(-BASE_W/2 - 5, 12);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.restore();
+
+    if(bottomOfMovingY < topOfStackY){
+      ctx.save();
+      const numBeams = 6;
+      for(let i = 0; i < numBeams; i++){
+        const pct = (i / (numBeams - 1));
+        const lx = m.x + (BASE_W * 0.15) + (BASE_W * 0.7 * pct);
+        
+        const grad = ctx.createLinearGradient(lx, bottomOfMovingY, lx, topOfStackY);
+        grad.addColorStop(0, 'rgba(183, 148, 246, 0.7)');
+        grad.addColorStop(0.5, 'rgba(139, 92, 246, 0.3)');
+        grad.addColorStop(1, 'rgba(139, 92, 246, 0)');
+
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5 + Math.sin(clock * 0.01 + i) * 0.8;
+        ctx.beginPath();
+        ctx.moveTo(lx, bottomOfMovingY);
+        ctx.lineTo(lx, topOfStackY);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
+
+  function drawBoxImage(block, x, y, w, footH, mode){
+    const img = BOX_IMAGES[block.colorIdx % BOX_IMAGES.length];
+    if(!img.complete || img.naturalWidth === 0) return;
+    const c = COLORS[block.colorIdx % COLORS.length];
+
+    const imgNaturalW = img.naturalWidth;
+    const imgNaturalH = img.naturalHeight;
+    const aspect = imgNaturalH / imgNaturalW;
+
+    const drawW = BASE_W;
+    const drawH = BASE_W * aspect;
+
+    let bob = 0, rot = BOX_ANGLE_CORRECTION, scaleX = 1, scaleY = 1, glowAmt = 0;
+
+    if(mode === 'moving'){
+      bob = Math.sin(clock * 0.004) * 3;
+      rot = BOX_ANGLE_CORRECTION + Math.sin(clock * 0.0025) * 0.02;
+      glowAmt = 15;
+    } else {
+      const dt = clock - (block.landAt || -999);
+      if(dt >= 0 && dt < 260){
+        const t = dt / 260;
+        const bounce = Math.sin(t * Math.PI);
+        scaleX = 1 + bounce * 0.08;
+        scaleY = 1 - bounce * 0.1;
+      }
+      if(mode === 'top'){
+        glowAmt = 12 + Math.sin(clock * 0.005) * 5;
+      }
+    }
+
+    const bottomY = y + footH;
+    const topY = bottomY - drawH;
+    
+    // رسم الصندوق في مكانه الصحيح مباشرة دون شروط التفاف تؤثر على تواجده
+    const cx = x + BASE_W/2;
+    const cy = topY + drawH/2 + bob;
+
+    if(mode !== 'moving'){
+      drawContactShadow(cx, bottomY, BASE_W);
+    }
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot); 
+    ctx.scale(scaleX, scaleY);
+
+    if(glowAmt > 0){
+      ctx.shadowColor = c.glow;
+      ctx.shadowBlur = glowAmt * 1.5;
+    }
+
+    ctx.drawImage(
+      img,
+      -drawW/2, -drawH/2, drawW, drawH
+    );
+
+    ctx.restore();
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    const bg = ctx.createRadialGradient(W/2, H*0.3, 20, W/2, H*0.3, H*0.8);
+    bg.addColorStop(0, 'rgba(139,92,246,0.12)');
+    bg.addColorStop(1, 'rgba(11,10,26,0)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+
+    // توجيه حركة الكاميرا لتناسب البرج تماماً
+    const targetCamY = H * 0.62 + (stack.length - 1) * BLOCK_H;
+    if(camY === undefined) {
+      camY = targetCamY;
+    } else {
+      camY += (targetCamY - camY) * 0.08;
+    }
+
+    ctx.save();
+    ctx.translate(0, camY);
+
+    // رسم الأرضية الحجرية
+    drawGround();
+
+    // رسم الصناديق المستقرة (بما فيها الأول المستقر)
+    for(let i=0;i<stack.length;i++){
+      const b = stack[i];
+      const mode = (i === stack.length-1) ? 'top' : 'stack';
+      drawBoxImage(b, b.x, b.y, b.w, BLOCK_H, mode);
+    }
+
+    // رسم تأثيرات الصندوق الطائر والليزر والنيون
+    if(moving && !gameOver){
+      const topBlock = stack[stack.length-1];
+      drawLaserAndIndicator(moving, topBlock);
+      drawBoxImage(moving, moving.x, moving.y, moving.w, BLOCK_H, 'moving');
+    }
+
+    for(const p of particles){
+      ctx.globalAlpha = Math.max(p.life,0);
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    ctx.restore();
+  }
+
+  let lastFrame = performance.now();
+  function loop(now){
+    const dt = Math.min(now - lastFrame, 50);
+    lastFrame = now;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  function startGame(){
+    initGame();
+    running = true;
+    startOverlay.classList.add('hidden');
+    endOverlay.classList.add('hidden');
+    tapHint.style.display = 'flex';
+  }
+
+  document.getElementById('start-btn').addEventListener('click', startGame);
+  document.getElementById('retry-btn').addEventListener('click', startGame);
+
+  wrap.addEventListener('pointerdown', (e)=>{
+    if(!running && !gameOver) return;
+    if(startOverlay.classList.contains('hidden') === false) return;
+    if(endOverlay.classList.contains('hidden') === false) return;
+    drop();
+  });
+
+  best = 0;
+  initGame();
+  draw();
+  requestAnimationFrame((t)=>{ lastFrame = t; requestAnimationFrame(loop); });
+})();
+</script>
+</body>
+</html>
