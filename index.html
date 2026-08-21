@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Dragon Toolkit - منصة متكاملة لأدوات العملات الرقمية.">
+<meta name="author" content="Dragon">
+<meta name="theme-color" content="#070b1d">
+<title>Dragon Toolkit | أدوات العملات الرقمية</title>
+<style>
+:root {
+  --navy-900: #070b1d;
+  --navy-800: #0d132b;
+  --navy-700: #111a3d;
+  --navy-600: #1a2347;
+  
+  --blue-core: #2563eb;
+  --blue-glow: #3b82f6;
+  --blue-light: #60a5fa;
+  --purple-glow: #8b5cf6;
+  --cyan-glow: #22d3ee;
+  --gold: #f59e0b;
+  --gold-light: #fbbf24;
+  --success: #10b981;
+  --danger: #f43f5e;
+  
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%);
+  --gradient-gold: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #fcd34d 100%);
+  --gradient-cyan: linear-gradient(135deg, #22d3ee, #3b82f6);
+  --gradient-glow: linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(139,92,246,0.12) 100%);
+  --gradient-shimmer: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  
+  --glass-bg: rgba(16, 22, 48, 0.6);
+  --glass-border: rgba(96, 165, 250, 0.08);
+  --glass-border-hover: rgba(96, 165, 250, 0.2);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03);
+  --glass-shadow-hover: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px rgba(59,130,246,0.1);
+  
+  --text-glow-blue: 0 0 20px rgba(59,130,246,0.5);
+  --text-glow-gold: 0 0 20px rgba(245,158,11,0.4);
+  --box-glow-blue: 0 0 20px rgba(37,99,235,0.4), 0 0 40px rgba(59,130,246,0.2);
+  --box-glow-purple: 0 0 20px rgba(139,92,246,0.3);
+
+  --bg-primary: #070b1d;
+  --bg-secondary: #0d132b;
+  --bg-card: rgba(16, 22, 48, 0.6);
+  --bg-glass: rgba(59, 130, 246, 0.04);
+  --border-glass: rgba(96, 165, 250, 0.08);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+  --accent-cyan: #22d3ee;
+  --accent-green: #10b981;
+  --accent-red: #f43f5e;
+  --accent-orange: #f59e0b;
+  --accent-pink: #ec4899;
+  --shadow-card: 0 8px 32px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.03);
+  --radius: 20px;
+  --radius-sm: 8px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-main: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, Tahoma, Arial, sans-serif;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-glass: rgba(37, 99, 235, 0.04);
+  --border-glass: rgba(30, 64, 175, 0.08);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --shadow-card: 0 8px 32px rgba(30, 58, 138, 0.1), 0 0 0 1px rgba(96, 165, 250, 0.12);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(30, 64, 175, 0.08);
+  --glass-shadow: 0 8px 32px rgba(30, 58, 138, 0.08);
+  --glass-shadow-hover: 0 20px 40px rgba(30, 58, 138, 0.15), 0 0 30px rgba(59,130,246,0.05);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-main);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: var(--transition);
+}
+
+.rpg-bg-orb {
+  position: fixed;
+  border-radius: 50%;
+  opacity: 0.25;
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-1 {
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, var(--blue-glow) 0%, transparent 70%);
+  top: -10%; left: -10%;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+.orb-2 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, var(--purple-glow) 0%, transparent 70%);
+  bottom: -10%; right: -10%;
+  animation: orbFloat 20s ease-in-out infinite reverse;
+}
+.orb-3 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 70%);
+  top: 40%; left: 50%;
+  animation: orbFloat 15s ease-in-out infinite 5s;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(30px,-30px) scale(1.1); }
+  66% { transform: translate(-20px,20px) scale(0.95); }
+}
+
+.rpg-grid-overlay {
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+#particles-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 2; pointer-events: none;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px) saturate(150%);
+  -webkit-backdrop-filter: blur(8px) saturate(150%);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-panel:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-shadow-hover);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: hueRotate 8s linear infinite;
+}
+.gradient-text-gold {
+  background: var(--gradient-gold);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+@keyframes hueRotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.glow-blue { box-shadow: 0 0 20px rgba(37,99,235,0.4), 0 0 40px rgba(59,130,246,0.2); }
+.glow-purple { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+.glow-gold { box-shadow: 0 0 20px rgba(245,158,11,0.4); }
+.text-glow-blue { text-shadow: 0 0 20px rgba(59,130,246,0.5); }
+
+.shimmer {
+  background: linear-gradient(90deg, #2563eb, #3b82f6, #60a5fa, #8b5cf6);
+  background-size: 200% 100%;
+  animation: shimmerMove 2s linear infinite;
+}
+@keyframes shimmerMove {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-900); }
+::-webkit-scrollbar-thumb { background: var(--gradient-primary); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gradient-cyan); }
+
+#app { display: block; min-height: 100vh; }
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(7,11,29,0.8);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 16px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+}
+[data-theme="light"] .header { background: rgba(240,244,248,0.85); }
+.header-brand {
+  display: flex; align-items: center; gap: 12px;
+}
+.header-brand .logo-box {
+  width: 40px; height: 40px;
+  background: var(--gradient-primary);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: white; font-size: 18px;
+}
+.header-brand span {
+  font-size: 20px; font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.header-actions {
+  display: flex; align-items: center; gap: 10px;
+}
+.icon-btn {
+  width: 38px; height: 38px;
+  background: var(--bg-glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary);
+  transition: var(--transition);
+}
+.icon-btn:hover {
+  background: var(--glass-bg);
+  color: var(--text-primary);
+  border-color: var(--blue-core);
+}
+.icon-btn svg { width: 18px; height: 18px; fill: currentColor; }
+.main-content {
+  padding: 24px;
+  min-height: calc(100vh - 72px);
+}
+.tool-page {
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 800px; margin: 0 auto;
+}
+.tool-page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.tool-page-header h2 { font-size: 22px; font-weight: 800; }
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%; padding: 14px 16px;
+  background: var(--bg-glass);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary); font-size: 15px;
+  font-family: var(--font-main); outline: none;
+  transition: var(--transition);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--blue-core);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+.form-group textarea { min-height: 120px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:640px) { .form-row { grid-template-columns: 1fr; } }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px;
+  background: var(--gradient-primary);
+  border: none; border-radius: var(--radius-sm);
+  color: white; font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: var(--transition);
+  position: relative; overflow: hidden;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gradient-shimmer);
+  transform: translateX(-100%);
+  transition: 0.7s;
+}
+.btn:hover::after { transform: translateX(100%); }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4), 0 0 20px rgba(59, 130, 246, 0.15);
+}
+.btn-secondary {
+  background: var(--bg-glass); color: var(--text-primary);
+  border: 1px solid var(--glass-border);
+}
+.btn-secondary:hover { background: var(--glass-bg); }
+.btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+.result-box {
+  margin-top: 20px; padding: 20px;
+  background: var(--gradient-glow);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+}
+.result-box .result-label {
+  font-size: 12px; font-weight: 600; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+}
+.result-box .result-value {
+  font-size: 28px; font-weight: 800;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.result-box .result-sub {
+  font-size: 14px; color: var(--text-secondary); margin-top: 4px;
+}
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9998;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.toast {
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--glass-shadow);
+  animation: toastIn 0.3s ease, toastOut 0.3s ease 2.7s forwards;
+  min-width: 280px;
+  border-right: 3px solid var(--blue-glow);
+}
+.toast.success { border-right-color: var(--success); }
+.toast.error { border-right-color: var(--danger); }
+.toast.info { border-right-color: var(--blue-glow); }
+@keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes toastOut { to { opacity: 0; transform: translateX(40px); } }
+@media(max-width:640px) {
+  .tool-page { padding: 20px; }
+}
+[dir="rtl"] .toast-container { right: auto; left: 24px; }
+
+.dragon-box { text-align: center; padding: 4px; }
+.dragon-logo { width: 90px; height: 90px; margin: 0 auto 18px; }
+.dragon-logo svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px var(--blue-glow)); }
+
+.dragon-btn {
+  width: 100%;
+  padding: 18px 28px;
+  background: #0a0a1a;
+  border: 2px solid #1a2a6a;
+  border-radius: var(--radius-sm);
+  color: #7eb8ff;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 0 10px rgba(59,130,246,0.3);
+  box-shadow: 
+    0 0 20px rgba(37,99,235,0.15),
+    inset 0 0 30px rgba(37,99,235,0.05);
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(59,130,246,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.05) 0%, transparent 40%),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 4px,
+      rgba(37,99,235,0.03) 4px,
+      rgba(37,99,235,0.03) 5px
+    );
+  letter-spacing: 2px;
+}
+.dragon-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 30% 20%, rgba(59,130,246,0.15) 0%, transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(59,130,246,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.dragon-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-shimmer);
+  transform: translateX(-100%);
+  transition: 0.7s;
+}
+.dragon-btn:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: #3b82f6;
+  box-shadow: 
+    0 8px 32px rgba(37,99,235,0.4),
+    0 0 40px rgba(37,99,235,0.15),
+    inset 0 0 40px rgba(37,99,235,0.08);
+  color: #93c5fd;
+}
+.dragon-btn:hover::after { transform: translateX(100%); }
+.dragon-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.dragon-reward-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #1a0e00;
+  border: 2px solid #f59e0b;
+  border-radius: var(--radius-sm);
+  color: #fbbf24;
+  font-size: 15px;
+  font-family: var(--font-main);
+  outline: none;
+  transition: var(--transition);
+  text-align: center;
+  letter-spacing: 2px;
+  font-weight: 700;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(245,158,11,0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(245,158,11,0.08) 0%, transparent 40%),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 4px,
+      rgba(245,158,11,0.04) 4px,
+      rgba(245,158,11,0.04) 5px
+    );
+  box-shadow: 0 0 20px rgba(245,158,11,0.1);
+}
+.dragon-reward-input:focus {
+  border-color: #fbbf24;
+  box-shadow: 0 0 30px rgba(245,158,11,0.2), inset 0 0 20px rgba(245,158,11,0.05);
+}
+.dragon-reward-input::placeholder {
+  color: rgba(245,158,11,0.4);
+  letter-spacing: 2px;
+}
+.dragon-reward-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dragon-reward-btn {
+  width: 100%;
+  padding: 16px 28px;
+  background: #0a0a1a;
+  border: 2px solid #1a2a6a;
+  border-radius: var(--radius-sm);
+  color: #7eb8ff;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 0 10px rgba(59,130,246,0.3);
+  box-shadow: 
+    0 0 20px rgba(37,99,235,0.15),
+    inset 0 0 30px rgba(37,99,235,0.05);
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(59,130,246,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.05) 0%, transparent 40%),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 4px,
+      rgba(37,99,235,0.03) 4px,
+      rgba(37,99,235,0.03) 5px
+    );
+  letter-spacing: 1px;
+  margin-top: 10px;
+}
+.dragon-reward-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(circle at 30% 20%, rgba(59,130,246,0.15) 0%, transparent 60%),
+    radial-gradient(circle at 70% 80%, rgba(59,130,246,0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+.dragon-reward-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-shimmer);
+  transform: translateX(-100%);
+  transition: 0.7s;
+}
+.dragon-reward-btn:hover {
+  transform: translateY(-3px) scale(1.01);
+  border-color: #3b82f6;
+  box-shadow: 
+    0 8px 32px rgba(37,99,235,0.4),
+    0 0 40px rgba(37,99,235,0.15),
+    inset 0 0 40px rgba(37,99,235,0.08);
+  color: #93c5fd;
+}
+.dragon-reward-btn:hover::after { transform: translateX(100%); }
+.dragon-reward-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.countdown-widget {
+  position: fixed;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 72px;
+  z-index: 9999;
+  margin: 0;
+  will-change: auto;
+}
+.countdown-widget svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.countdown-widget .cd-counter {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+  box-shadow: var(--glass-shadow);
+}
+.countdown-widget .cd-bg { fill: none; stroke: var(--glass-border); stroke-width: 5; }
+.countdown-widget .cd-progress {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s linear;
+}
+.countdown-widget .cd-inner {
+  position: absolute;
+  inset: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass-bg);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--text-primary);
+  box-shadow: var(--glass-shadow);
+  transition: var(--transition);
+}
+.countdown-widget.ready .cd-inner {
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  padding: 4px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  background-blend-mode: overlay;
+  color: #e0e0f5;
+  animation: pulseReady 1.1s ease-in-out infinite;
+}
+@keyframes pulseReady {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+.footer {
+  border-top: 1px solid var(--glass-border);
+  padding: 50px 28px 28px;
+  margin-top: 60px;
+  text-align: center;
+  width: 100%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.footer-links {
+  display: flex; justify-content: center; gap: 28px;
+  flex-wrap: wrap; margin-bottom: 24px;
+}
+.footer-links a {
+  color: var(--text-secondary); text-decoration: none;
+  font-size: 15px; font-weight: 600; transition: var(--transition); cursor: pointer;
+}
+.footer-links a:hover { color: var(--blue-glow); }
+.footer-copy { color: var(--text-muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div class="rpg-bg-orb orb-1"></div>
+<div class="rpg-bg-orb orb-2"></div>
+<div class="rpg-bg-orb orb-3"></div>
+<div class="rpg-grid-overlay"></div>
+<canvas id="particles-canvas"></canvas>
+
+<div id="app">
+<header class="header">
+  <div class="header-brand">
+    <div class="logo-box" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%); display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 122.88 106.68" width="24" height="24" style="filter: drop-shadow(0 0 4px rgba(59,130,246,0.5));">
+        <defs>
+          <linearGradient id="dragonCore2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#93c5fd"/>
+            <stop offset="30%" stop-color="#60a5fa"/>
+            <stop offset="65%" stop-color="#8b5cf6"/>
+            <stop offset="100%" stop-color="#1e40af"/>
+          </linearGradient>
+        </defs>
+        <path d="M52.4,20.33C60.04,15.89,63.76,8.53,68.19,0c2.26,2.44,3.48,8.44,2.98,16.83c21.29-1.39,34.78,10.58,51.71-7.42C115.6,37.52,89.32,21.55,78.34,24c16.95,1.92,21.76,11.28,41.28,7.96c-6.72,8.09-21.59,6.45-34.11,0.75c2.21,6.08,24.83,10.01,20.22,28.16c-4.36-7.49-8.45-12.09-12.29-14.08c7.91,13.68,7.29,26.15-0.09,39.78c-1.63,3-3.62,5.73-6.05,8.09c3.38-7.47,5.02-14.43,3.58-20.48c-1.37,5.2-26.98,55.76-13.31,14.34C50.27,115.34,23.7,88.04,0,106.68c7.91-37.07,50.98-22.56,66.84-39.74c3.26-3.54,4.44-8.33,3.04-11.78c-4.08-10.04-18.37-7.09-23.55-0.96c-3.19,4.91-9.37,10.37-14.44,4.29c-0.83-0.99-1.3-2.26-1.43-3.78c2.56,1.09,5.12,1.51,7.68,0.26l-2.05-2.3c2.73-0.77,5.78,0.09,8.19-2.42l8.96-5.89c1.71-1.26-2.13-2.07-11.26-2.7c-0.77,1.99-0.42,3.81,1.79,5.38c-2.62,0.35-4.89-0.35-6.66-2.56c-1.04,0.81-0.89,1.38,1.9,5.81c-2.51,0.11-5.02-0.89-7.53-2.48c-0.58,2.02,0.27,4.04,0.41,6.06c-1.83-0.53-3.51-1.4-5.02-2.62c-1.52-1.23-2.89-2.8-4.09-4.72c-0.83-1.88-0.82-3.29-0.18-4.34c0.39-0.65,1.02-1.16,1.85-1.57c3.1-1.53,4.66-1.35,8.29-3.77c3.43-2.28,6.93-5.01,9.91-8.69C47.47,22.2,47.34,23.27,52.4,20.33Z" fill="url(#dragonCore2)"/>
+      </svg>
+    </div>
+    <span class="gradient-text">Dragon Toolkit</span>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme" id="themeBtn">
+      <svg viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="main-content" id="mainContent">
+<div id="toolPagesContainer"></div>
+</main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ============================================
+// 1. الخلفية والجسيمات
+// ============================================
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let w, h;
+  function resize() { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  for (let i = 0; i < 25; i++) {
+    particles.push({
+      x: Math.random() * w, y: Math.random() * h,
+      r: Math.random() * 2 + 0.5,
+      dx: (Math.random() - 0.5) * 0.3,
+      dy: (Math.random() - 0.5) * 0.3,
+      alpha: Math.random() * 0.5 + 0.1
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+      p.x += p.dx; p.y += p.dy;
+      if (p.x < 0 || p.x > w) p.dx *= -1;
+      if (p.y < 0 || p.y > h) p.dy *= -1;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(59,130,246,' + p.alpha + ')';
+      ctx.fill();
+    });
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = 'rgba(59,130,246,' + (0.08 * (1 - dist/120)) + ')';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ============================================
+// 2. المتغيرات العامة والإعدادات
+// ============================================
+const API_BASE_URL = "https://floral-leaf-2157.omer-nafi98.workers.dev";
+
+function toast(msg, type) {
+  type = type || 'info';
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  var iconSvg = type === 'success' ? '<path d="M20 6L9 17l-5-5"/>' : '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+  t.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">' + iconSvg + '</svg><span>' + msg + '</span>';
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => toast('تم النسخ إلى الحافظة!', 'success'));
+}
+
+let currentTheme = localStorage.getItem('theme') || 'dark';
+
+function setTheme(theme) {
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  const icon = document.getElementById('themeIcon');
+  if (icon) {
+    if (theme === 'light') {
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+    } else {
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    }
+  }
+}
+function toggleTheme() { setTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+
+// ============================================
+// 3. الأدوات والتنقل
+// ============================================
+const tools = [
+  { id: 'profit_calc', icon: '<path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>' },
+  { id: 'converter', icon: '<path d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>' },
+  { id: 'dragon_login', icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' }
+];
+
+const toolOrder = tools.map(function(t) { return t.id; });
+let currentToolIndex = 0;
+let countdownTimer = null;
+
+const toolNames = {
+  ar: {
+    profit_calc: { name: "حاسبة الربح", desc: "احسب الربح الصافي وعائد الاستثمار والرسوم لصفقاتك.", cat: "تداول" },
+    converter: { name: "محول العملات", desc: "حول بين العملات الرقمية الرئيسية بأسعار مباشرة.", cat: "محول" },
+    dragon_login: { name: "بوت دراغون", desc: "أنشئ جلسة فريدة واحصل على مكافأة عملة التنين.", cat: "مكافآت" }
+  }
+};
+
+let cryptoPrices = {};
+
+// ============================================
+// 4. عداد الوقت والتنقل بين الأدوات
+// ============================================
+function clearCountdown() {
+  if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+}
+
+function hideCountdownWidget() {
+  var widget = document.getElementById('countdownWidget');
+  if (widget) {
+    widget.style.display = 'none';
+  }
+}
+
+function injectCountdownWidget() {
+  var old = document.getElementById('countdownWidget');
+  if (old) old.remove();
+  
+  if (currentToolIndex >= 2) {
+    return;
+  }
+  
+  var widget = document.createElement('div');
+  widget.className = 'countdown-widget';
+  widget.id = 'countdownWidget';
+  widget.innerHTML =
+    '<div class="cd-counter">' + (currentToolIndex + 1) + ' / 3</div>' +
+    '<svg viewBox="0 0 70 70">' +
+      '<circle class="cd-bg" cx="35" cy="35" r="30"/>' +
+      '<circle class="cd-progress" cx="35" cy="35" r="30"/>' +
+    '</svg>' +
+    '<div class="cd-inner">5</div>';
+  
+  document.body.appendChild(widget);
+}
+
+function startCountdown() {
+  clearCountdown();
+  var widget = document.getElementById('countdownWidget');
+  if (!widget) return;
+  var circle = widget.querySelector('.cd-progress');
+  var inner = widget.querySelector('.cd-inner');
+  var circumference = 2 * Math.PI * 30;
+  circle.style.strokeDasharray = circumference;
+  circle.style.strokeDashoffset = 0;
+  widget.classList.remove('ready');
+  inner.onclick = null;
+  var remaining = 5;
+  inner.textContent = remaining;
+  countdownTimer = setInterval(function() {
+    remaining--;
+    circle.style.strokeDashoffset = circumference * (1 - remaining / 5);
+    if (remaining <= 0) {
+      clearInterval(countdownTimer);
+      widget.classList.add('ready');
+      inner.textContent = 'اضغط هنا';
+      inner.onclick = goToNextTool;
+    } else {
+      inner.textContent = remaining;
+    }
+  }, 1000);
+}
+
+function goToNextTool() {
+  if (currentToolIndex === 2) {
+    hideCountdownWidget();
+    return;
+  }
+  
+  currentToolIndex = (currentToolIndex + 1);
+  openTool(toolOrder[currentToolIndex]);
+}
+
+// ============================================
+// 5. شاشة الحظر
+// ============================================
+function showBlockedScreen(blockedUntil) {
+  hideCountdownWidget();
+  const container = document.getElementById('toolPagesContainer');
+  const until = new Date(blockedUntil);
+  
+  // التأكد من أن التاريخ صحيح
+  if (isNaN(until.getTime())) {
+    container.innerHTML =
+      '<div class="tool-page" style="text-align:center;padding:60px 32px;">' +
+        '<div style="font-size:80px;margin-bottom:20px;">🚫</div>' +
+        '<h2 style="color:var(--danger);font-size:28px;margin-bottom:16px;">تم حظر وصولك</h2>' +
+        '<p style="color:var(--text-secondary);font-size:18px;">يرجى المحاولة لاحقاً.</p>' +
+        '<button class="btn" onclick="location.reload()" style="margin:20px auto 0;">🔄 إعادة المحاولة</button>' +
+      '</div>';
+    return;
+  }
+  
+  container.innerHTML =
+    '<div class="tool-page" style="text-align:center;padding:60px 32px;">' +
+      '<div style="font-size:80px;margin-bottom:20px;">🚫</div>' +
+      '<h2 style="color:var(--danger);font-size:28px;margin-bottom:16px;">تم حظرك لمدة 48 ساعة لسوء استخدام البوت</h2>' +
+      '<p style="color:var(--text-secondary);font-size:16px;margin-bottom:8px;">سيتم رفع الحظر تلقائياً في:</p>' +
+      '<p style="font-size:28px;font-weight:800;margin-top:12px;color:var(--blue-glow);text-shadow:0 0 20px rgba(59,130,246,0.3);" id="blockCountdownText"></p>' +
+      '<div style="margin-top:30px;padding:20px;background:var(--bg-glass);border-radius:12px;border:1px solid var(--glass-border);">' +
+        '<p style="color:var(--text-muted);font-size:13px;">' +
+          'إذا كنت تعتقد أن هذا خطأ، يرجى التواصل مع الدعم الفني.' +
+        '</p>' +
+      '</div>' +
+      '<button class="btn" onclick="location.reload()" style="margin:20px auto 0;">🔄 إعادة المحاولة</button>' +
+    '</div>';
+  
+  const el = document.getElementById('blockCountdownText');
+  function tick() {
+    const diff = until - new Date();
+    if (diff <= 0) { 
+      el.textContent = "⏳ يمكنك الآن إعادة تحميل الصفحة"; 
+      el.style.color = "var(--success)";
+      return; 
+    }
+    const days = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    
+    let text = '';
+    if (days > 0) text += days + ' ي ';
+    text += h + ' س ' + m + ' د ' + s + ' ث';
+    el.textContent = text;
+    setTimeout(tick, 1000);
+  }
+  tick();
+  
+  // تغيير عنوان الصفحة
+  document.title = '🚫 تم الحظر | Dragon Toolkit';
+}
+
+// ============================================
+// 6. HTML الخاص بالأدوات
+// ============================================
+const toolPagesHTML = {
+  profit_calc: `<div class="tool-page">
+    <div class="tool-page-header"><h2>📊 حاسبة الربح</h2></div>
+    <div class="form-row">
+      <div class="form-group"><label>سعر الشراء ($)</label><input type="number" id="pc_buy" step="0.01" placeholder="مثل: 50000"></div>
+      <div class="form-group"><label>سعر البيع ($)</label><input type="number" id="pc_sell" step="0.01" placeholder="مثل: 52000"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>الكمية</label><input type="number" id="pc_amount" step="0.01" placeholder="مثل: 0.5"></div>
+      <div class="form-group"><label>نسبة الرسوم (%)</label><input type="number" id="pc_fee" step="0.01" value="0.1"></div>
+    </div>
+    <button class="btn" onclick="calcProfit()">🧮 احسب الربح</button>
+    <div id="pc_result"></div>
+  </div>`,
+
+  converter: `<div class="tool-page">
+    <div class="tool-page-header"><h2>💱 محول العملات</h2></div>
+    <div class="form-row">
+      <div class="form-group"><label>من</label><select id="cv_from"><option value="btc">BTC</option><option value="eth">ETH</option><option value="usdt">USDT</option><option value="sol">SOL</option><option value="bnb">BNB</option><option value="xrp">XRP</option><option value="ada">ADA</option><option value="doge">DOGE</option></select></div>
+      <div class="form-group"><label>إلى</label><select id="cv_to"><option value="usd">USD</option><option value="btc">BTC</option><option value="eth">ETH</option><option value="usdt">USDT</option><option value="sol">SOL</option><option value="bnb">BNB</option><option value="xrp">XRP</option><option value="ada">ADA</option><option value="doge">DOGE</option></select></div>
+    </div>
+    <div class="form-group"><label>المبلغ</label><input type="number" id="cv_amount" step="any" placeholder="مثل: 1"></div>
+    <button class="btn" onclick="convertCrypto()">🔄 حول</button>
+    <div id="cv_result"></div>
+  </div>`,
+
+  dragon_login: '<div class="tool-page"><div class="tool-page-header"><h2>بوت دراغون</h2></div><div class="dragon-box"><div class="dragon-logo"><svg viewBox="0 0 122.88 106.68"><defs><linearGradient id="dragonCore" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#93c5fd"/><stop offset="30%" stop-color="#60a5fa"/><stop offset="65%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#1e40af"/></linearGradient><linearGradient id="dragonEdge" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(147,197,253,0.95)"/><stop offset="45%" stop-color="rgba(59,130,246,0.35)"/><stop offset="100%" stop-color="rgba(30,64,175,0.8)"/></linearGradient></defs><path d="M52.4,20.33C60.04,15.89,63.76,8.53,68.19,0c2.26,2.44,3.48,8.44,2.98,16.83c21.29-1.39,34.78,10.58,51.71-7.42C115.6,37.52,89.32,21.55,78.34,24c16.95,1.92,21.76,11.28,41.28,7.96c-6.72,8.09-21.59,6.45-34.11,0.75c2.21,6.08,24.83,10.01,20.22,28.16c-4.36-7.49-8.45-12.09-12.29-14.08c7.91,13.68,7.29,26.15-0.09,39.78c-1.63,3-3.62,5.73-6.05,8.09c3.38-7.47,5.02-14.43,3.58-20.48c-1.37,5.2-26.98,55.76-13.31,14.34C50.27,115.34,23.7,88.04,0,106.68c7.91-37.07,50.98-22.56,66.84-39.74c3.26-3.54,4.44-8.33,3.04-11.78c-4.08-10.04-18.37-7.09-23.55-0.96c-3.19,4.91-9.37,10.37-14.44,4.29c-0.83-0.99-1.3-2.26-1.43-3.78c2.56,1.09,5.12,1.51,7.68,0.26l-2.05-2.3c2.73-0.77,5.78,0.09,8.19-2.42l8.96-5.89c1.71-1.26-2.13-2.07-11.26-2.7c-0.77,1.99-0.42,3.81,1.79,5.38c-2.62,0.35-4.89-0.35-6.66-2.56c-1.04,0.81-0.89,1.38,1.9,5.81c-2.51,0.11-5.02-0.89-7.53-2.48c-0.58,2.02,0.27,4.04,0.41,6.06c-1.83-0.53-3.51-1.4-5.02-2.62c-1.52-1.23-2.89-2.8-4.09-4.72c-0.83-1.88-0.82-3.29-0.18-4.34c0.39-0.65,1.02-1.16,1.85-1.57c3.1-1.53,4.66-1.35,8.29-3.77c3.43-2.28,6.93-5.01,9.91-8.69C47.47,22.2,47.34,23.27,52.4,20.33Z" fill="url(#dragonCore)" stroke="url(#dragonEdge)" stroke-width="0.9"/></svg></div><div id="dragonLoginBox"><button class="dragon-btn" id="dragonGenBtn" onclick="generateDragonSession()">🔹الدخول🔹</button><div id="dragonRewardStatus" style="margin-top:10px;font-size:13px;text-align:center;min-height:20px;"></div></div><div id="dragonRewardBox" style="display:none;margin-top:20px;"><div id="dragonDeviceInfo" style="padding:12px;background:var(--bg-glass);border-radius:12px;font-size:12px;color:var(--text-secondary);border:1px solid var(--glass-border);text-align:center;line-height:1.8;"></div><div class="form-group" style="margin-top:16px;"><label style="color:var(--text-secondary);">كود المكافأة</label><input type="text" id="dragonRewardInput" class="dragon-reward-input" placeholder="XXXX-XXXX-XXXX" maxlength="14"></div><button class="dragon-reward-btn" id="dragonRewardBtn" onclick="verifyDragonReward()">تحقق واحصل على المكافأة</button><div id="dragonRewardStatus2" style="margin-top:10px;font-size:13px;color:var(--success);text-align:center;min-height:20px;"></div></div></div></div>'
+};
+
+// ============================================
+// 7. فتح الأدوات
+// ============================================
+function openTool(id) {
+  var idx = toolOrder.indexOf(id);
+  if (idx !== -1) currentToolIndex = idx;
+  const container = document.getElementById('toolPagesContainer');
+
+  container.innerHTML = toolPagesHTML[id] || '';
+  container.style.display = 'block';
+  window.scrollTo(0,0);
+  
+  if (id === 'dragon_login' || currentToolIndex === 2) {
+    hideCountdownWidget();
+  } else {
+    if (id === 'converter') fetchCryptoPrices();
+    injectCountdownWidget();
+    startCountdown();
+  }
+
+  if (id === 'dragon_login') {
+      setTimeout(initDragonScreen, 100);
+  }
+}
+
+// ============================================
+// 8. دوال الحسابات والمحولات
+// ============================================
+function calcProfit() {
+  var buy = parseFloat(document.getElementById('pc_buy').value) || 0;
+  var sell = parseFloat(document.getElementById('pc_sell').value) || 0;
+  var amt = parseFloat(document.getElementById('pc_amount').value) || 0;
+  var fee = parseFloat(document.getElementById('pc_fee').value) || 0;
+  var gross = (sell - buy) * amt;
+  var feeAmt = (buy * amt + sell * amt) * (fee / 100);
+  var net = gross - feeAmt;
+  var roi = buy > 0 ? ((sell - buy) / buy) * 100 : 0;
+  document.getElementById('pc_result').innerHTML = '<div class="result-box"><div class="result-label">صافي الربح</div><div class="result-value">$' + net.toFixed(2) + '</div><div class="result-sub">الإجمالي: $' + gross.toFixed(2) + ' | الرسوم: $' + feeAmt.toFixed(2) + ' | العائد: ' + roi.toFixed(2) + '%</div></div>';
+}
+
+async function fetchCryptoPrices() {
+  if (Object.keys(cryptoPrices).length > 0) return;
+  try {
+    var res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether,solana,binancecoin,ripple,cardano,dogecoin&vs_currencies=usd,btc,eth');
+    var data = await res.json();
+    cryptoPrices = {
+      btc: data.bitcoin, eth: data.ethereum, usdt: data.tether,
+      sol: data.solana, bnb: data.binancecoin, xrp: data.ripple,
+      ada: data.cardano, doge: data.dogecoin
+    };
+  } catch(e) { toast('تعذر جلب الأسعار المباشرة', 'error'); }
+}
+
+function convertCrypto() {
+  var from = document.getElementById('cv_from').value;
+  var to = document.getElementById('cv_to').value;
+  var amt = parseFloat(document.getElementById('cv_amount').value) || 0;
+  if (!cryptoPrices[from]) { toast('الأسعار لم تُحمّل بعد. حاول مرة أخرى.', 'error'); return; }
+  var result = 0;
+  if (to === 'usd') result = amt * cryptoPrices[from].usd;
+  else if (to === 'btc') result = amt * (cryptoPrices[from].btc || cryptoPrices[from].usd / cryptoPrices.btc.usd);
+  else if (to === 'eth') result = amt * (cryptoPrices[from].eth || cryptoPrices[from].usd / cryptoPrices.eth.usd);
+  else result = amt * (cryptoPrices[from].usd / cryptoPrices[to].usd);
+  document.getElementById('cv_result').innerHTML = '<div class="result-box"><div class="result-label">المبلغ المحول</div><div class="result-value">' + result.toFixed(6) + ' ' + to.toUpperCase() + '</div><div class="result-sub">1 ' + from.toUpperCase() + ' = ' + (cryptoPrices[from].usd / (to==='usd'?1:cryptoPrices[to].usd)).toFixed(6) + ' ' + to.toUpperCase() + '</div></div>';
+}
+
+// ============================================
+// 9. دوال دراغون - البصمة والجلسات
+// ============================================
+const DRAGON_KEYS = {
+    SESSION     : "dragon_session",
+    FINGERPRINT : "dragon_fingerprint_id",
+    DATE        : "dragon_date"
+};
+
+let dragonFpPromise = null;
+let dragonFpId = null;
+
+function loadFingerprintLibrary(callback) {
+  if (window.FingerprintJS) { callback(); return; }
+  var script = document.createElement('script');
+  script.src = 'https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js';
+  script.onload = callback;
+  document.head.appendChild(script);
+}
+
+function initDragonFingerprint() {
+    if (dragonFpPromise) return dragonFpPromise;
+    dragonFpPromise = new Promise(function(resolve) {
+        loadFingerprintLibrary(function() {
+            FingerprintJS.load()
+                .then(fp => fp.get())
+                .then(result => {
+                    dragonFpId = result.visitorId;
+                    sessionStorage.setItem(DRAGON_KEYS.FINGERPRINT, dragonFpId);
+                    resolve(dragonFpId);
+                })
+                .catch(() => {
+                    dragonFpId = null;
+                    resolve(null);
+                });
+        });
+    });
+    return dragonFpPromise;
+}
+
+function generateDragonToken() {
+    return `${Math.random().toString(36).substring(2, 12)}-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 8)}`.toUpperCase();
+}
+
+function getDragonDateTime() {
+    const n = new Date();
+    return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}T${String(n.getHours()).padStart(2,'0')}-${String(n.getMinutes()).padStart(2,'0')}-${String(n.getSeconds()).padStart(2,'0')}`;
+}
+
+async function storeDragonSession(sessionValue, fingerprintId, createdAt) {
+    try {
+        const res = await fetch(`${API_BASE_URL}/session`, {
+            method  : "POST",
+            headers : { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                session_value: sessionValue,
+                fingerprint: fingerprintId,
+                created_at: createdAt
+            })
+        });
+        if (!res.ok) return false;
+        const data = await res.json();
+        return !!data.success;
+    } catch (err) {
+        console.error("Backend error:", err);
+        return false;
+    }
+}
+
+function displayDragonDeviceInfo() {
+    const box = document.getElementById("dragonDeviceInfo");
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tgId = sessionStorage.getItem("telegram_user_id") || "غير محدد";
+    if (box) {
+        box.innerHTML = `المنطقة: ${timezone} | اللغة: ${navigator.language}<br>معرف التليجرام: <span style="color:var(--blue-glow);font-weight:700;">${tgId}</span>`;
+    }
+}
+
+// ============================================
+// 10. إنشاء جلسة دراغون
+// ============================================
+async function generateDragonSession() {
+    const btn = document.getElementById("dragonGenBtn");
+    const loginBox = document.getElementById("dragonLoginBox");
+    const rewardBox = document.getElementById("dragonRewardBox");
+    const statusBox = document.getElementById("dragonRewardStatus");
+
+    sessionStorage.removeItem(DRAGON_KEYS.SESSION);
+    sessionStorage.removeItem(DRAGON_KEYS.FINGERPRINT);
+    sessionStorage.removeItem(DRAGON_KEYS.DATE);
+    sessionStorage.removeItem("dragon_reward_used");
+
+    if (btn) { 
+        btn.disabled = true; 
+        btn.textContent = "يتم الدخول الان✨"; 
+        btn.style.opacity = "0.8";
+    }
+    
+    if (statusBox) { 
+        statusBox.textContent = "جاري إنشاء الجلسة... ⏳"; 
+        statusBox.style.color = "var(--blue-glow)";
+    }
+
+    try {
+        const fingerprint = await initDragonFingerprint();
+        if (!fingerprint) throw new Error("فشل البصمة");
+        
+        // تأكد من تخزين الـ fingerprint في sessionStorage
+        sessionStorage.setItem(DRAGON_KEYS.FINGERPRINT, fingerprint);
+        dragonFpId = fingerprint;
+
+        await new Promise(r => setTimeout(r, 200));
+
+        const newSession = generateDragonToken();
+        const createdAt = new Date().toISOString();
+
+        const stored = await storeDragonSession(newSession, fingerprint, createdAt);
+        if (!stored) throw new Error("فشل تخزين الجلسة");
+
+        sessionStorage.setItem(DRAGON_KEYS.SESSION, newSession);
+        sessionStorage.setItem(DRAGON_KEYS.DATE, getDragonDateTime());
+
+        if (loginBox) loginBox.style.display = "none";
+        if (rewardBox) {
+            rewardBox.style.display = "block";
+            const input = document.getElementById("dragonRewardInput");
+            if (input) {
+                input.disabled = false;
+                input.value = "";
+                if (input.parentElement) input.parentElement.style.display = "block";
+            }
+            const rewardBtn = document.getElementById("dragonRewardBtn");
+            if (rewardBtn) {
+                rewardBtn.disabled = false;
+                rewardBtn.style.opacity = "1";
+                rewardBtn.textContent = "تحقق واحصل على المكافأة";
+            }
+        }
+        displayDragonDeviceInfo();
+        toast("تم إنشاء الجلسة بنجاح", "success");
+
+    } catch (err) {
+        console.error(err);
+        toast("حدث خطأ أثناء إنشاء الجلسة", "error");
+        
+        if (btn) { 
+            btn.disabled = false; 
+            btn.textContent = "🔹الدخول🔹"; 
+            btn.style.opacity = "1";
+        }
+        if (statusBox) { 
+            statusBox.textContent = "حدث خطأ، حاول مرة أخرى"; 
+            statusBox.style.color = "var(--danger)";
+        }
+    }
+}
+
+function initDragonScreen() {
+    const loginBox = document.getElementById("dragonLoginBox");
+    const rewardBox = document.getElementById("dragonRewardBox");
+    const genBtn = document.getElementById("dragonGenBtn");
+    const statusBox = document.getElementById("dragonRewardStatus");
+
+    if (!loginBox || !rewardBox || !genBtn) {
+        setTimeout(initDragonScreen, 500);
+        return;
+    }
+
+    loginBox.style.display = "block";
+    rewardBox.style.display = "none";
+
+    genBtn.style.display = "block";
+    genBtn.disabled = false;
+    genBtn.style.opacity = "1";
+    genBtn.textContent = "🔹الدخول🔹";
+
+    if (statusBox) { 
+        statusBox.textContent = ""; 
+    }
+}
+
+// ============================================
+// 11. التحقق من المكافأة
+// ============================================
+async function verifyDragonReward() {
+    const token = document.getElementById("dragonRewardInput")?.value.trim().toUpperCase();
+    const input = document.getElementById("dragonRewardInput");
+    const statusBox = document.getElementById("dragonRewardStatus2");
+    const rewardBtn = document.getElementById("dragonRewardBtn");
+
+    if (!token) { toast("يرجى إدخال الكود أولاً", "error"); return; }
+    if (input && input.disabled) { toast("تم استخدام الكود مسبقاً", "error"); return; }
+    if (sessionStorage.getItem("dragon_reward_used")) { toast("تم استخدام الكود مسبقاً", "error"); return; }
+
+    // التحقق من وجود fingerprint قبل المتابعة
+    let fingerprint = dragonFpId || sessionStorage.getItem(DRAGON_KEYS.FINGERPRINT);
+    if (!fingerprint) {
+        toast("يرجى إنشاء جلسة أولاً (اضغط على زر الدخول)", "error");
+        if (statusBox) {
+            statusBox.textContent = "⚠️ يرجى إنشاء جلسة أولاً";
+            statusBox.style.color = "var(--danger)";
+        }
+        return;
+    }
+
+    if (rewardBtn) { rewardBtn.disabled = true; rewardBtn.style.opacity = "0.6"; rewardBtn.textContent = "جاري التحقق..."; }
+    if (input) input.disabled = true;
+    if (statusBox) statusBox.textContent = "جاري التحقق...";
+
+    try {
+        const currentSlug = window.location.hash.replace("#", "").toLowerCase() || "profit_calc";
+
+        const res = await fetch(`${API_BASE_URL}/verify-reward`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+                token: token, 
+                page_slug: currentSlug, 
+                fingerprint: fingerprint,
+                telegram_id: sessionStorage.getItem("telegram_user_id") || ""
+            })
+        });
+
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+            if (result.error === "invalid_token") {
+                toast("الكود غير صحيح أو غير مخصص لهذه الصفحة", "error");
+                if (statusBox) statusBox.textContent = "الكود غير صحيح";
+            } else if (result.error === "blocked") {
+                toast("تم حظر وصولك بسبب سوء الاستخدام", "error");
+                showBlockedScreen(result.blocked_until);
+                return;
+            } else {
+                throw new Error(result.error || "فشل إضافة الجواهر");
+            }
+            if (input) input.disabled = false;
+            if (rewardBtn) { 
+                rewardBtn.disabled = false; 
+                rewardBtn.style.opacity = "1"; 
+                rewardBtn.textContent = "تحقق واحصل على المكافأة"; 
+            }
+            return;
+        }
+
+        // في حالة النجاح
+        const tgDisplay = document.querySelector("#dragonDeviceInfo span");
+        if (tgDisplay && result.telegram_id) tgDisplay.textContent = result.telegram_id;
+
+        sessionStorage.setItem("dragon_reward_used", token);
+        toast("تم إضافة عملة التنين بنجاح!", "success");
+        if (statusBox) { 
+            statusBox.textContent = "✅ تم إضافة عملة التنين — تحقق من البوت"; 
+            statusBox.style.color = "var(--success)"; 
+        }
+        setTimeout(() => {
+            if (input && input.parentElement) input.parentElement.style.display = "none";
+            if (rewardBtn) { 
+                rewardBtn.textContent = "تم الحصول على المكافأة"; 
+                rewardBtn.disabled = true; 
+            }
+        }, 1500);
+
+    } catch (err) {
+        console.error(err);
+        toast("خطأ في الاتصال، حاول مرة أخرى", "error");
+        if (input) input.disabled = false;
+        if (rewardBtn) { 
+            rewardBtn.disabled = false; 
+            rewardBtn.style.opacity = "1"; 
+            rewardBtn.textContent = "تحقق واحصل على المكافأة"; 
+        }
+        if (statusBox) statusBox.textContent = "";
+    }
+}
+
+// ============================================
+// 12. تهيئة التطبيق (مع التحقق من الحظر)
+// ============================================
+async function initApp() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const telegramId = urlParams.get("user_id") || "";
+  if (telegramId) sessionStorage.setItem("telegram_user_id", telegramId);
+
+  setTheme(currentTheme);
+
+  try {
+    const fp = await initDragonFingerprint();
+    const pageSlug = window.location.hash.replace("#", "").toLowerCase() || "profit_calc";
+    
+    if (fp) {
+      try {
+        const res = await fetch(`${API_BASE_URL}/check-block`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            fingerprint: fp, 
+            telegram_id: sessionStorage.getItem("telegram_user_id") || "",
+            page_slug: pageSlug 
+          })
+        });
+        
+        const data = await res.json();
+        
+        if (data.blocked) {
+          showBlockedScreen(data.blocked_until);
+          return;
+        }
+      } catch (e) {
+        console.warn("Block check failed, continuing normally:", e);
+      }
+    }
+  } catch (fpError) {
+    console.warn("Fingerprint initialization failed:", fpError);
+  }
+
+  currentToolIndex = 0;
+  if (document.readyState === 'complete') {
+    openTool(toolOrder[0]);
+  } else {
+    window.addEventListener('load', function() { 
+      openTool(toolOrder[0]); 
+    });
+  }
+}
+
+// ============================================
+// 13. تشغيل التطبيق
+// ============================================
+setTheme(currentTheme);
+
+requestAnimationFrame(function() {
+  requestAnimationFrame(function() {
+    initApp().catch(function(error) {
+      console.error('فشل تهيئة التطبيق:', error);
+      const container = document.getElementById('toolPagesContainer');
+      container.innerHTML = `
+        <div class="tool-page" style="text-align:center;padding:60px 32px;">
+          <h2 style="color:var(--danger);">⚠️ حدث خطأ</h2>
+          <p style="color:var(--text-secondary);">تعذر تهيئة التطبيق. يرجى تحديث الصفحة.</p>
+          <button class="btn" onclick="location.reload()" style="margin-top:20px;">🔄 تحديث</button>
+        </div>
+      `;
+    });
+  });
+});
+
+</script>
+</body>
+</html>
